@@ -1,3 +1,11 @@
 Rails.application.routes.draw do
+  scope :metrics do
+    scope ':key' do
+      post '/', to: 'metrics#create', as: :metrics
+
+      resource :sum, only: %i[ show ]
+    end
+  end
+
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
