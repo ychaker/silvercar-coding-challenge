@@ -1,0 +1,71 @@
+version: '3'
+services:
+  pgsql:
+    container_name: silvercar_db
+    image: mdillon/postgis
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+
+  # redis:
+  #   container_name: silvercar_redis
+  #   image: redis
+  #   ports:
+  #     - 6379:6379
+
+  # jobs:
+  #   container_name: silvercar_jobs
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   env_file:
+  #     - .env
+  #   command: bundle exec sidekiq -e development -C config/sidekiq.yml
+  #   volumes:
+  #     - .:/srv/app
+  #   depends_on:
+  #     - pgsql
+  #     - redis
+
+  # webpacker:
+  #   container_name: silvercar_webpacker
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   env_file:
+  #     - .env
+  #   command: ./bin/webpack-dev-server
+  #   # command: echo "foo"
+  #   volumes:
+  #     - .:/srv/app
+  #   ports:
+  #     - 3035:3035
+
+  # mailcatcher:
+  #   container_name: silvercar_mailcatcher
+  #   image: schickling/mailcatcher
+  #   ports:
+  #     - 1080:1080
+
+  app:
+    container_name: silvercar_app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/srv/app
+    ports:
+      - 3000:3000
+    links:
+      - pgsql
+      # - redis
+      # - jobs
+      # - webpacker
+      # - mailcatcher
+    depends_on:
+      - pgsql
+      # - redis
+      # - jobs
+      # - webpacker
+      # - mailcatcher

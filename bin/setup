@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+
+# path to your application root.
+APP_ROOT = File.expand_path('..', __dir__)
+
+def system!(*args)
+  system(*args) || abort("\n== Command #{args} failed ==")
+end
+
+FileUtils.chdir APP_ROOT do
+  # This script is a way to setup or update your development environment automatically.
+  # This script is idempotent, so that you can run it at anytime and get an expectable outcome.
+  # Add necessary setup steps to this file.
+
+  puts "\n== Copying sample files =="
+  unless File.exist?('.env')
+    system! 'cp .env.sample .env 2>&1'
+    puts 'PLEASE GO TO THE .env FILE AND CHANGE EMPTY/DEFAULT VALUES NOW!!'
+  end
+  puts "\ndone √"
+
+  puts "\n== Building Docker container =="
+  system! 'docker-compose up --build --no-start 2>&1'
+  puts "\ndone √"
+
+  puts "\n== Setting up DB =="
+  system! 'bin/docker r bin/rake db:create 2>&1'
+  system! 'bin/docker r bin/rake db:create RAILS_ENV=test 2>&1'
+  system! 'bin/docker r bin/rake db:schema:load 2>&1'
+  puts "\ndone √"
+
+  puts "\n== Removing old logs and tempfiles =="
+  system! 'bin/docker r bin/rake log:clear tmp:clear 2>&1'
+  puts "\ndone √"
+end

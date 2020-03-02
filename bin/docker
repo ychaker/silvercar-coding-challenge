@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'pathname'
+
+# path to your application root.
+APP_ROOT = Pathname.new File.expand_path('..', __dir__)
+
+command, *rest = ARGV
+
+def system! *args
+  system(*args) || abort("\n== Command #{args} failed ==")
+end
+
+Dir.chdir APP_ROOT do
+  case command
+  when 'build', 'b'
+    system! 'docker-compose build 2>&1'
+  when 'bash', 'c'
+    system! 'docker-compose run --rm app bash 2>&1'
+  when 'destroy', 'd'
+    system! 'docker-compose down 2>&1'
+  when 'run', 'r'
+    system! "docker-compose run --rm app #{rest.join(' ')} 2>&1"
+  when 'stop', 'p'
+    system! 'docker-compose stop 2>&1'
+  when 'server', 's'
+    # system 'docker-compose run --service-ports app bin/server'
+    system! 'docker-compose up 2>&1'
+  when 'start', 't'
+    system! 'docker-compose start 2>&1'
+  else
+    options = '(build|b, bash|c, destroy|d, run|r, stop|p, server|s, start|t)'
+    puts "Unknown option #{options}"
+  end
+end

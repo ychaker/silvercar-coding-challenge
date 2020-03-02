@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+echo 'Staring server using Procfile.dev'
+foreman start -f Procfile.dev

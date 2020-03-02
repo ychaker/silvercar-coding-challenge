@@ -1,0 +1,18 @@
+FROM ruby:2.6.5
+
+MAINTAINER Bear & Giraffe <ops@bearandgiraffe.com>
+
+# Must have packages
+RUN apt-get update -qq && apt-get install -y vim curl git tmux tar file xz-utils build-essential
+
+# Clean environment
+RUN apt-get clean all
+
+COPY . /srv/app
+WORKDIR /srv/app
+
+RUN gem update --system
+RUN gem install bundler
+RUN bundle install
+
+CMD bin/server
