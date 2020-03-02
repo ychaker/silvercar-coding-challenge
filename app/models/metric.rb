@@ -14,4 +14,8 @@ class Metric < ApplicationRecord
   scope :last_hour, ->() {
     where(Metric.arel_table[:created_at].gteq(1.hour.ago))
   }
+
+  scope :pluck_value, ->() {
+    pluck(:value)
+  }
 end

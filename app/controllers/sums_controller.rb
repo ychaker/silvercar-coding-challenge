@@ -1,8 +1,7 @@
 class SumsController < ApplicationController
   def show
-    metrics = Metric.for_key(params[:key]).last_hour
-    service = Metrics::Sum.new metrics
+    values = Metric.for_key(params[:key]).last_hour.pluck_value
 
-    render json: { value: service.call }, status: :ok
+    render json: { value: values.sum }, status: :ok
   end
 end
