@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   scope :metrics do
     scope ':key' do
       post '/', to: 'metrics#create', as: :metrics
+
+      resource :sum, only: %i[ show ]
     end
   end
 
