@@ -4,7 +4,8 @@ class Metric < ApplicationRecord
     presence: true
 
   validates :value,
-    presence: true
+    presence:      true,
+     numericality: true
 
   # Scopes
   scope :for_key, ->(key) {
